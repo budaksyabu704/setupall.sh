@@ -98,18 +98,25 @@ vnstat -u -i eth0
 service vnstat restart
 
 
-# install webserver
-cd
+# Install Webserver Port 81
+apt-get install nginx php5 libapache2-mod-php5 php5-fpm php5-cli php5-mysql php5-mcrypt libxml-parser-perl -y
 rm /etc/nginx/sites-enabled/default
 rm /etc/nginx/sites-available/default
-wget -O /etc/nginx/nginx.conf "http://borneobesthosting.me/autoscript/nginx.conf"
-mkdir -p /home/vps/public_html
-echo "<pre>Modified by InsomNet4u</pre>" > /home/vps/public_html/index.html
-echo "<?php phpinfo(); ?>" > /home/vps/public_html/info.php
-wget -O /etc/nginx/conf.d/vps.conf http://borneobesthosting.me/autoscript/vps.conf"
+mv /etc/nginx/nginx.conf /etc/nginx/nginx.conf.old
+curl http://borneobesthosting.me/autoscript/nginx.conf > /etc/nginx/nginx.conf
+curl http///borneobesthosting.me/autoscript/vps.conf > /etc/nginx/conf.d/vps.conf
 sed -i 's/listen = \/var\/run\/php5-fpm.sock/listen = 127.0.0.1:9000/g' /etc/php5/fpm/pool.d/www.conf
+useradd -m vps;
+mkdir -p /home/vps/public_html
+echo "<?php phpinfo() ?>" > /home/vps/public_html/info.php
+chown -R www-data:www-data /home/vps/public_html
+chmod -R g+rw /home/vps/public_html
+cd /home/vps/public_html
+wget -O /home/vps/public_html/uptime.php "http://autoscript.kepalatupai.com/uptime.php1"
+wget -O /home/vps/public_html/index.html "http://borneobesthosting.me/index.html"
 service php5-fpm restart
 service nginx restart
+cd
 
 
 #install PPTP
